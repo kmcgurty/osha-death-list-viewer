@@ -8,4 +8,4 @@ You can easily have this running on your own server.
 4. run `grunt` to run everything or `grunt buildAll` to compile the src
 
 About
----"# wheel-spin" 
+---

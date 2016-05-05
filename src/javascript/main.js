@@ -17,7 +17,7 @@ function getCSV(year){
 
 function appendData(json){
 	var data = json.data;
-	
+
 	for(var i = 1; i < data.length; i++){
 		if(data[i] !== ""){
 			var summaryReportData = data[i][1];
@@ -30,7 +30,9 @@ function appendData(json){
 			var tr = document.createElement("tr");
 			tr.innerHTML = html;
 
-			document.querySelector("#main-table").appendChild(tr);
+			document.querySelector("#main-table tbody").appendChild(tr);
 		}
 	}
+
+	new Tablesort(document.querySelector("#main-table"));
 }
