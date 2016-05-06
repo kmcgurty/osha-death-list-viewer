@@ -6,17 +6,16 @@
 </head>
 
 <body>
-	<table id="main-table">
-		<thead>
-			<tr>
-				<th>Summary Report Date</th>
-				<th>Date of Incident</th>
-				<th>Company</th>
-				<th>Description</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
+	Fiscal Year: 
+	<select id="fiscal-year" onchange="getCSV(this.options[this.selectedIndex].value)">
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+	</select>
+	<div class="loading" style="display: none;"></div>
+	<table id="main-table"></table>
 		
 	</form>
     <script src="javascript/main.min.js"></script>
