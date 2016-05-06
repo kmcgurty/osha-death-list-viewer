@@ -50,13 +50,11 @@ function appendData(json){
 
 			var companyInfo = data[i][3];
 			
-			//var companyName = companyInfo.replace(/, ([A-Z]{2} [0-9]{5})|, ([A-Z]{2}$)/g, "");
-			var stateArray = /([A-Z]{2}|[A-Z][a-z]* \d{5})((?:\d{5})$|,|\*| |$)/g.exec(companyInfo);
-			var state = "Undefined";
+			//regex is fun... there are vast inconsistencies with the company info
+			var stateArray = /([A-z]{2,})(?:,\.? ?|\* ?| |$|)(?:\d{1,}(?:\-\d{1,})?)?(?:$| \()/g.exec(companyInfo);
+			var state = "UNK";
 
-			if(stateArray){
-				state = stateArray[1];
-			}
+			if(stateArray) state = stateArray[1];
 
 			html = "<td>" + summaryReportData + "</td>\
 					<td>" + dateOfIncident + "</td>\
