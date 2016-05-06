@@ -9,3 +9,4 @@ You can easily have this running on your own server.
 
 About
 ---
+Every year, OSHA publishes a CSV of workplace deaths. This simply puts everything into a table for easy viewing.

@@ -1,6 +1,11 @@
-getCSV("10");
+
+var select = document.querySelector("#fiscal-year");
+var year = select.options[select.selectedIndex].value;
+getCSV(year);
 
 function getCSV(year){
+	toggleLoading();
+
 	var url = encodeURIComponent("https://www.osha.gov/dep/fatcat/FatalitiesFY" + year + ".csv");
 
 	//this is a generic YQL statement, will get the contents of any page
@@ -8,24 +13,56 @@ function getCSV(year){
 
 	$.getJSON(yql, function(data){
 		var csv = data.query.results.body;
-		csv = csv.replace(/\uFFFD/g, ''); // has random diamond quesiton marks
+		csv = csv.replace(/\uFFFD/g, ''); // removes random diamond quesiton marks
 
 		var json = Papa.parse(csv);
 		appendData(json);
-	})
+
+		toggleLoading();
+	}).error(function(data){
+		console.log(data);
+		alert("There was an error accessing the resource")
+	});
 }
 
 function appendData(json){
 	var data = json.data;
 
+	/*jshint multistr: true */
+	var html = "<thead>\
+					<tr>\
+						<th>Summary Report Date</th>\
+						<th>Date of Incident</th>\
+						<th>Company</th>\
+						<th>State</th>\
+						<th>Description</th>\
+					</tr>\
+				</thead>\
+				<tbody></tbody>";
+
+	document.querySelector("#main-table").innerHTML = html;
+
 	for(var i = 1; i < data.length; i++){
-		if(data[i] !== ""){
+		if(data[i][0] !== ""){
 			var summaryReportData = data[i][1];
 			var dateOfIncident = data[i][2];
-			var company = data[i][3];
 			var description = data[i][4];
 
-			var html = "<td>" + summaryReportData + "</td><td>" + dateOfIncident + "</td><td>" + company + "</td><td>" + description + "</td>";
+			var companyInfo = data[i][3];
+			
+			//var companyName = companyInfo.replace(/, ([A-Z]{2} [0-9]{5})|, ([A-Z]{2}$)/g, "");
+			var stateArray = /([A-Z]{2}|[A-Z][a-z]* \d{5})((?:\d{5})$|,|\*| |$)/g.exec(companyInfo);
+			var state = "Undefined";
+
+			if(stateArray){
+				state = stateArray[1];
+			}
+
+			html = "<td>" + summaryReportData + "</td>\
+					<td>" + dateOfIncident + "</td>\
+					<td>" + companyInfo + "</td>\
+					<td>" + state + "</td>\
+					<td>" + description + "</td>";
 
 			var tr = document.createElement("tr");
 			tr.innerHTML = html;
@@ -35,4 +72,14 @@ function appendData(json){
 	}
 
 	new Tablesort(document.querySelector("#main-table"));
+}
+
+function toggleLoading(){
+	var loadingElement = document.querySelector(".loading");
+
+	if(loadingElement.style.display == "none"){
+		loadingElement.style.display = "inline-block";
+	} else {
+		loadingElement.style.display = "none";
+	}
 }
